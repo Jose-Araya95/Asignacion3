@@ -8,36 +8,7 @@ namespace MyWebApp.Controllers
     {
         public IActionResult Index()
         {
-            List<Hotel> hotels = new List<Hotel>();
-
-            hotels.Add(new Hotel
-            {
-                Id = 1,
-                Name = "Hotel Papagayo",
-                Address = "Guanacaste, Costa Rica",
-                Description = "",
-                Photo = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/03/b5/12/occidental-papagayo-adults.jpg?w=900&h=-1&s=1"
-            });
-
-            hotels.Add(new Hotel
-            {
-                Id = 1,
-                Name = "Hotel Fiesta Puntarenas",
-                Address = "Puntarenas, Costa Rica",
-                Description = "",
-                Photo = "https://images.trvl-media.com/lodging/18000000/17770000/17763500/17763483/18e5786a.jpg"
-            });
-
-            hotels.Add(new Hotel
-            {
-                Id = 1,
-                Name = "Hotel RUI",
-                Address = "Guanacaste, Costa Rica",
-                Description = "",
-                Photo = "https://images.trvl-media.com/lodging/18000000/17770000/17763500/17763483/18e5786a.jpg"
-            });
-
-            //ViewBag.hotels = hotels;
+            List<Hotel> hotels = HotelService.getAll();
 
             return View(hotels);
         }
@@ -46,7 +17,7 @@ namespace MyWebApp.Controllers
         {
             ViewData["Titulo"] = "Mi página de privacidad";
             ViewData["Año"] = 2024;
-            return View();           
+            return View();
         }
 
         public IActionResult Settings()
