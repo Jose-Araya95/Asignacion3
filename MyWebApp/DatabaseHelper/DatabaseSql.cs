@@ -13,7 +13,7 @@ namespace MyWebApp.DatabaseHelper
             return conn;
         }
 
-        public static DataTable executeStoredProcedure(string sp)
+        public static DataTable executeStoredProcedure(string sp, List<SqlParameter> parameters)
         {
             using (conn = new SqlConnection(connectionString))
             {
@@ -23,6 +23,14 @@ namespace MyWebApp.DatabaseHelper
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = sp;
                 cmd.Connection = conn;
+
+                if (parameters != null)
+                {
+                    foreach (SqlParameter param in parameters)
+                    {
+                        cmd.Parameters.Add(param);
+                    }
+                }
 
                 cmd.ExecuteNonQuery();
 

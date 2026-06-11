@@ -46,7 +46,7 @@
                 {
                     @foreach (var product in Model)
                     {
-                        <tr>
+                        <tr onclick="window.location.href='product/detail?id=@product.ProductID'">
                             <td class="fw-bold text-secondary ps-3">
                                 @product.ProductID
                             </td>

@@ -1,17 +1,15 @@
-﻿using Supabase;
+﻿using MyWebApp.SupabaseClient;
+using Supabase;
 
 namespace MyWebApp.Auth
 {
     public static class SupabaseAuthentication
     {
-        private static string url = "";
-        private static string key = "";
-
         public static async Task<Supabase.Gotrue.Session> SignIn(string txtEmail, string txtPwd)
         {
             try
             {
-                var client = new Client(url, key);
+                Client client = SupabClient.getSupabaseClient();
 
                 await client.InitializeAsync();
 

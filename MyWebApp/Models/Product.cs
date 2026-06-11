@@ -1,4 +1,6 @@
-﻿using MyWebApp.DatabaseHelper;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.Data.SqlClient;
+using MyWebApp.DatabaseHelper;
 using System.Data;
 using System.Drawing;
 using System.Reflection;
@@ -19,35 +21,29 @@ namespace MyWebApp.Models
         public string Category { get; set; } = string.Empty;
     }
 
-    public static class ProductService
+    public class ProductDetail
     {
-        public static List<Product> getAll()
-        {
-            List<Product> list = new List<Product>();
-
-            DataTable ds = DatabaseSql.executeStoredProcedure("[dbo].[uspGetProducts]");
-
-            if (ds != null)
-            {
-                foreach (DataRow dr in ds.Rows)
-                {
-                    Product product = new Product();
-
-                    product.ProductID = (int)dr["ProductID"];
-                    product.ProductNumber = dr["ProductNumber"].ToString() ?? string.Empty;
-                    product.ProductName = dr["ProductName"].ToString() ?? string.Empty;
-                    product.ListPrice = (decimal)dr["ListPrice"];
-                    product.Color = dr["Color"].ToString() ?? string.Empty;
-                    product.SubCategory = dr["SubCategory"].ToString() ?? string.Empty;
-                    product.Category = dr["Category"].ToString() ?? string.Empty;
-                    product.Model = dr["Model"].ToString() ?? string.Empty;
-                    product.Size = dr["Size"].ToString() ?? string.Empty;
-                    product.Weight = dr["Weight"] == DBNull.Value ? null : (decimal)dr["Weight"];
-                    list.Add(product);
-                }
-            }
-
-            return list;
-        }
+        public int ProductId { get; set; }
+        public string ProductName { get; set; } = string.Empty;
+        public string ProductNumber { get; set; } = string.Empty;
+        public bool MakeFlag { get; set; }
+        public bool FinishedGoodsFlag { get; set; }
+        public string? Color { get; set; }
+        public short SafetyStockLevel { get; set; }
+        public short ReorderPoint { get; set; }
+        public decimal CurrentStandardCost { get; set; }
+        public decimal CurrentListPrice { get; set; }
+        public string? Size { get; set; }
+        public string? SizeUnitMeasureCode { get; set; }
+        public string? WeightUnitMeasureCode { get; set; }
+        public decimal? Weight { get; set; }
+        public int DaysToManufacture { get; set; }
+        public string? ProductLine { get; set; }
+        public string? Class { get; set; }
+        public string? Style { get; set; }
+        public DateTime SellStartDate { get; set; }
+        public DateTime? SellEndDate { get; set; }
+        public DateTime? DiscontinuedDate { get; set; }
+        public int TotalQuantityInStock { get; set; }
     }
 }
