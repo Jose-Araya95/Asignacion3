@@ -20,12 +20,11 @@ namespace MyWebApp.Services
             {
                 return new List<NavigationPages>
                 {
-                    new NavigationPages { Title="Home", Controller="Home", Action = "Index"},
-                    new NavigationPages { Title="Tickets", Controller="Tickets", Action = "Index"},
-                    new NavigationPages { Title="Logout", Controller="Login", Action = "Logout"},
-                    new NavigationPages { Title="Privacy", Controller="Privacy", Action = "Privacy"},
-                    new NavigationPages { Title="Settings", Controller="Settings", Action = "Settings"},
-                    new NavigationPages { Title="Profile", Controller="Profile", Action = "Profile"}
+                    new NavigationPages { Title = "Home", Controller = "Home", Action = "Index" },
+                    new NavigationPages { Title = "Tickets", Controller = "Ticket", Action = "Index" },
+                    new NavigationPages { Title = "Privacy", Controller = "Home", Action = "Privacy" },
+                    new NavigationPages { Title = "Settings", Controller = "Home", Action = "Settings" },
+                    new NavigationPages { Title="Logout", Controller="Login", Action = "Logout"}
                 };
             }
 

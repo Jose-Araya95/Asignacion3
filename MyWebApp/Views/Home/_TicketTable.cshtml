@@ -1,0 +1,76 @@
+﻿@model List<MyWebApp.Models.Ticket>
+
+<div class="table-responsive shadow-sm rounded-3">
+    <table class="table table-hover table-striped align-middle mb-0 bg-white">
+        <thead class="table-dark text-uppercase fs-7">
+            <tr>
+                <th scope="col" class="ps-3">ID</th>
+                <th scope="col">Título</th>
+                <th scope="col">Descripción</th>
+                <th scope="col" class="text-center">Estado</th>
+                <th scope="col" class="text-center">Prioridad</th>
+                <th scope="col" class="text-end">Fecha de Creación</th>
+                <th scope="col" class="text-center pe-3">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-muted">
+                        No hay tickets registrados en el sistema.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var ticket in Model)
+                {
+                    string statusClass = ticket.Status?.ToLower() switch
+                    {
+                        "open" or "abierto" => "bg-success",
+                        "in progress" or "en progreso" => "bg-warning text-dark",
+                        "closed" or "cerrado" or "done" => "bg-secondary",
+                        "blocked" or "bloqueado" => "bg-danger",
+                        _ => "bg-light text-dark border"
+                    };
+                    string priorityClass = ticket.Priority?.ToLower() switch
+                    {
+                        "high" or "alta" => "bg-danger",
+                        "medium" or "media" => "bg-warning text-dark",
+                        "low" or "baja" => "bg-info text-dark",
+                        _ => "bg-light text-dark border"
+                    };
+
+                    <tr>
+                        <td class="fw-bold text-secondary ps-3">@ticket.Id</td>
+                        <td>
+                            <a asp-controller="Ticket" asp-action="Detail" asp-route-id="@ticket.Id" class="fw-semibold text-primary text-decoration-none hov-link">
+                                @ticket.Title
+                            </a>
+                        </td>
+                        <td>
+                            <span class="text-muted small text-truncate d-inline-block" style="max-width: 220px;" title="@ticket.Description">
+                                @(string.IsNullOrEmpty(ticket.Description) ? "Sin descripción" : ticket.Description)
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge @statusClass">@ticket.Status</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge @priorityClass">@ticket.Priority</span>
+                        </td>
+                        <td class="text-end text-secondary small">
+                            @ticket.CreatedAt.ToString("dd/MM/yyyy")
+                        </td>
+                        <td class="text-center pe-3">
+                            <a asp-controller="Ticket" asp-action="Detail" asp-route-id="@ticket.Id" class="btn btn-outline-primary btn-sm px-3 rounded-pill fw-bold">
+                                <i class="bi bi-chat-left-text me-1"></i> Ver
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -9,55 +9,79 @@ namespace MyWebApp.Controllers
 {
     public class TicketController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("session")))
+            string? sessionJson = HttpContext.Session.GetString("session");
+
+            if (string.IsNullOrEmpty(sessionJson))
                 return RedirectToAction("Index", "Login");
 
-            List<Ticket> ticketList = TicketService.getAll().Result;
+            List<Ticket> ticketList = await TicketService.getAll(sessionJson);
 
             return View(ticketList);
         }
 
-        public IActionResult Detail(int id)
+        // Cambiado de int a long
+        public async Task<IActionResult> Detail(long id)
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("session")))
+            string? sessionJson = HttpContext.Session.GetString("session");
+
+            if (string.IsNullOrEmpty(sessionJson))
                 return RedirectToAction("Index", "Login");
 
-            Supabase.Gotrue.Session? session = JsonConvert.DeserializeObject<Session>(HttpContext.Session.GetString("session"));
+            Session? session = JsonConvert.DeserializeObject<Session>(sessionJson);
 
-            Ticket detail = TicketService.getTicketById(id).Result;
+            Ticket? detail = await TicketService.getTicketById(id, sessionJson);
 
-            detail.ActiveSessionUserId = session.User.Id;
+            if (detail != null && session?.User != null)
+            {
+                detail.ActiveSessionUserId = session.User.Id;
+            }
 
             return View(detail);
         }
 
-        public IActionResult PostComment(String ticketId, String commentText)
+        [HttpPost]
+        public async Task<IActionResult> PostComment(string ticketId, string commentText)
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("session")))
+            string? sessionJson = HttpContext.Session.GetString("session");
+
+            if (string.IsNullOrEmpty(sessionJson))
                 return RedirectToAction("Index", "Login");
 
-            Supabase.Gotrue.Session? session = JsonConvert.DeserializeObject<Session>(HttpContext.Session.GetString("session"));
+            Session? session = JsonConvert.DeserializeObject<Session>(sessionJson);
+
+            // Convertimos de antemano el id a entero para que coincida con el método Detail(int id)
+            int idAsInt = Convert.ToInt32(ticketId);
 
             Comment comment = new Comment
             {
                 CommentText = commentText,
-                TicketId = Convert.ToInt32(ticketId),
-                CreatedBy = session.User.Id,
+                TicketId = idAsInt,
+                CreatedBy = session?.User?.Id,
                 CreatedAt = DateTime.Now,
             };
 
-            TicketService.postComment(comment);
+            await TicketService.postComment(comment, sessionJson);
 
-            return Redirect("Detail?id=" + ticketId);
+            // Redirección explícita pasando el parámetro exacto 'id' como entero
+            return RedirectToAction("Detail", "Ticket", new { id = idAsInt });
         }
 
-        public IActionResult DeleteComment(String ticketId, int commentId)
+        [HttpPost]
+        public async Task<IActionResult> DeleteComment(string ticketId, int commentId)
         {
-            TicketService.deleteComment(commentId);
+            string? sessionJson = HttpContext.Session.GetString("session");
 
-            return Redirect("Detail?id=" + ticketId);
+            if (string.IsNullOrEmpty(sessionJson))
+                return RedirectToAction("Index", "Login");
+
+            int idAsInt = Convert.ToInt32(ticketId);
+
+            await TicketService.deleteComment(commentId, sessionJson);
+
+            // Redirección explícita pasando el parámetro exacto 'id' como entero
+            return RedirectToAction("Detail", "Ticket", new { id = idAsInt });
         }
     }
 }

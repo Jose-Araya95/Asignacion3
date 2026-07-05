@@ -2,9 +2,6 @@
 using MyWebApp.Auth;
 using MyWebApp.Models;
 using Newtonsoft.Json;
-using Supabase.Gotrue;
-using System.Text.Json.Serialization;
-using System.Xml.Linq;
 
 namespace MyWebApp.Controllers
 {
@@ -12,30 +9,37 @@ namespace MyWebApp.Controllers
     {
         public IActionResult Index()
         {
-           return View();
+            return View();
         }
 
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-
             return View("Index");
         }
-        
+
         [HttpPost]
-        public IActionResult ValidateLogin(UserModel user)
+        public async Task<IActionResult> ValidateLogin(UserModel user)
         {
-            Supabase.Gotrue.Session? session = SupabaseAuthentication.SignIn(user.Email, user.Pwd).Result;
-            
+            // Validar que los campos no vengan nulos
+            if (string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.Pwd))
+            {
+                ViewBag.ErrorMessage = "Debe ingresar correo y contraseña.";
+                return View("Index");
+            }
+
+            var (session, errorMessage) = await SupabaseAuthentication.SignIn(user.Email, user.Pwd);
+
             if (session != null)
             {
                 HttpContext.Session.SetString("session", JsonConvert.SerializeObject(session));
-
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-                return RedirectToAction("Error", "Home");
+                // Pasamos el error al ViewBag para que la Partial View lo muestre
+                ViewBag.ErrorMessage = errorMessage;
+                return View("Index");
             }
         }
     }

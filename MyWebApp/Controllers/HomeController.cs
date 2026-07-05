@@ -1,26 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
 using MyWebApp.Models;
 using MyWebApp.Services;
-using Newtonsoft.Json;
-using Supabase.Gotrue;
 using System.Diagnostics;
 
 namespace MyWebApp.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("session")))
-                return RedirectToAction("Index", "Login");
+            // Solución: Usar string? (nullable) para calmar al compilador
+            string? sessionJson = HttpContext.Session.GetString("session");
 
-            Supabase.Gotrue.Session? session = JsonConvert.DeserializeObject<Session>(HttpContext.Session.GetString("session"));
+            if (string.IsNullOrEmpty(sessionJson))
+                return RedirectToAction("Index", "Login");
 
             ViewData["CustomNavMenu"] = NavigationService.GetMenuPages(2);
 
-            List<Hotel> hotels = HotelService.getAll();
+            // Consultar la información pasando el token de sesión serializado
+            List<Ticket> tickets = await TicketService.getAll(sessionJson);
 
-            return View(hotels);
+            return View(tickets);
         }
 
         public IActionResult Privacy()

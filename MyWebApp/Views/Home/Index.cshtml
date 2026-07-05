@@ -1,45 +1,19 @@
-﻿@model List<Hotel>
+﻿@model List<MyWebApp.Models.Ticket>
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
 <div class="container py-5">
-
     <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold">Hoteles Disponibles</h1>
-        <p class="text-muted">
-            Explora los hoteles disponibles y encuentra la mejor opción para tu estadía.
+        <h1 class="display-5 fw-bold text-primary">Dashboard de Tickets</h1>
+        <p class="text-muted fs-5">
+            Consulta y gestión de requerimientos almacenados en Supabase.
         </p>
+        <span class="badge bg-secondary px-3 py-2 fs-6">
+            Total Tickets: @(Model?.Count() ?? 0)
+        </span>
     </div>
 
-    <div class="row g-4">
-
-        @foreach (var hotel in @Model)
-        {
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
-                    <img src="@hotel.Photo"
-                         class="card-img-top"
-                         style="height:220px; object-fit:cover;"
-                         alt="@hotel.Name">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title fw-semibold">
-                            @hotel.Name
-                        </h5>
-                        <p class="card-text text-muted flex-grow-1">
-                            <i class="bi bi-geo-alt"></i>
-                            @hotel.Address
-                        </p>
-                        <div class="mt-auto">
-                            <a href="#"
-                                   class="btn btn-primary w-100 rounded-pill">
-                                Ver Detalles
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }        
-    </div>
+    @await Html.PartialAsync("_TicketTable", Model)
 </div>

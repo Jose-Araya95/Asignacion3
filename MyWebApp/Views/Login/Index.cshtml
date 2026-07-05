@@ -6,25 +6,30 @@
 
 <div class="container py-5">
     <div class="text-center mb-5">
-        <div class="card mx-auto" style="width:18rem">
-            <div class="card-header">
-                Login
+        <div class="card mx-auto shadow-sm" style="width:22rem">
+            <div class="card-header bg-dark text-white fw-bold">
+                HelpDesk Login
             </div>
+
             <form asp-action="ValidateLogin" asp-controller="Login" method="post">
                 <div class="card-body">
+
+                    <!-- Aquí llamamos a la Partial View de errores -->
+                    <partial name="_LoginAlerts" />
+
                     <div class="form-floating mb-3">
-                        <input name="Email" type="email" class="form-control" id="floatingInput">
+                        <input name="Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
                         <label for="floatingInput">Email address</label>
                     </div>
                     <div class="form-floating">
-                        <input name="Pwd" type="password" class="form-control" id="floatingPassword">
+                        <input name="Pwd" type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
                         <label for="floatingPassword">Password</label>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <button class="btn btn-primary w-100" type="submit">Login</button>
+                <div class="card-footer bg-light">
+                    <button class="btn btn-primary w-100 fw-bold" type="submit">Login</button>
                 </div>
             </form>
-        </div>      
-    </div> 
+        </div>
+    </div>
 </div>
